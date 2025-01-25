@@ -1,0 +1,69 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+    # Laravel App
+    app:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        image: campaign-management-app
+        container_name: campaign-management-app
+        restart: unless-stopped
+        environment:
+            - APP_ENV=local
+            - APP_DEBUG=true
+            - APP_KEY=base64:YOUR_GENERATED_APP_KEY
+            - DB_CONNECTION=mysql
+            - DB_HOST=db
+            - DB_PORT=3306
+            - DB_DATABASE=campaign_management
+            - DB_USERNAME=root
+            - DB_PASSWORD=secret
+        volumes:
+            - ./backend:/var/www
+            - ./backend/storage:/var/www/storage
+            - ./backend/bootstrap/cache:/var/www/bootstrap/cache
+        ports:
+            - "9000:9000"
+        depends_on:
+            - db
+
+    # MySQL Database
+    db:
+        image: mysql:8.0
+        container_name: campaign-management-db
+        restart: unless-stopped
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_DATABASE: campaign_management
+            MYSQL_USER: root
+            MYSQL_PASSWORD: secret
+        ports:
+            - "3306:3306"
+        volumes:
+            - dbdata:/var/lib/mysql
+
+    # React Frontend
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        image: campaign-management-frontend
+        container_name: campaign-management-frontend
+        restart: unless-stopped
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+            - REACT_APP_API_URL=http://localhost:9000/api
+        volumes:
+            - ./frontend:/app
+            - /app/node_modules
+        ports:
+            - "3000:3000"
+        depends_on:
+            - app
+
+volumes:
+    dbdata:
+        driver: local
