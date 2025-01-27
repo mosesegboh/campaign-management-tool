@@ -139,26 +139,10 @@ Run backend tests:
   php artisan test
   ```
 
-Run frontend tests:
-
-- With Docker:
-
-  ```bash
-  docker-compose exec frontend npm test
-  ```
-
-- Without Docker:
-
-  ```bash
-  cd frontend
-  npm test
-  ```
-
 ## Notes for Evaluator
 
-1. Ensure the `APP_KEY` in the backend `.env` file is consistent across environments.
-2. Avoid committing `.env` files; instead, use `.env.example` as a template.
+1. ERD Diagram is in the project root.
+2. Ensure the `APP_KEY` in the backend `.env` file is consistent across environments.
 3. If using Docker, make sure ports 3000, 9000, and 3306 are free.
-4. Automated tests should pass before deploying or sharing the app.
 
 For questions or issues, reach out to mosesegboh@yahoo.com. Happy Reviewing!
