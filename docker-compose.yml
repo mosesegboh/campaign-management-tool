@@ -1,12 +1,10 @@
-# docker-compose.yml
-
 version: '3.8'
 
 services:
     # Laravel App
     app:
         build:
-            context: ./backend
+            context: .
             dockerfile: Dockerfile
         image: campaign-management-app
         container_name: campaign-management-app
@@ -14,7 +12,7 @@ services:
         environment:
             - APP_ENV=local
             - APP_DEBUG=true
-            - APP_KEY=base64:base64:6ANufiHFubazgaqo0ozPliD7AJQYdMbOQAvf6Lg7ZV8=
+            - APP_KEY=base64:6ANufiHFubazgaqo0ozPliD7AJQYdMbOQAvf6Lg7ZV8=
             - DB_CONNECTION=mysql
             - DB_HOST=db
             - DB_PORT=3306
@@ -22,9 +20,9 @@ services:
             - DB_USERNAME=root
             - DB_PASSWORD=secret
         volumes:
-            - ./backend:/var/www
-            - ./backend/storage:/var/www/storage
-            - ./backend/bootstrap/cache:/var/www/bootstrap/cache
+            - ./:/var/www
+            - ./storage:/var/www/storage
+            - ./bootstrap/cache:/var/www/bootstrap/cache
         ports:
             - "9000:9000"
         depends_on:
