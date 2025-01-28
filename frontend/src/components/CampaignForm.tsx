@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent, useContext, useEffect } from 'react';
+import { useState, ChangeEvent, FormEvent, useContext, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import api from '../services/api';
 import {
@@ -11,13 +11,14 @@ import {
     Alert,
     CircularProgress,
 } from '@mui/material';
-import { CreateCampaignPayload, CampaignFormValues } from '../types/types';
+import {  CreateCampaignPayload, CampaignFormValues } from '../types/types';
 
 const countries = ['Estonia', 'Spain', 'Bulgaria'] as const;
 
 
 function CampaignForm() {
     const { user } = useContext(AuthContext);
+    const MAX_PAYOUTS = 3;
 
     const [values, setValues] = useState<CampaignFormValues>({
         advertiser_id: user?.advertiser?.id?.toString() || '',
@@ -68,7 +69,7 @@ function CampaignForm() {
         const updatedPayouts = [...values.payouts];
         updatedPayouts[index] = {
             ...updatedPayouts[index],
-            [field]: value,
+            [field]: field === 'payout_value' ? Number(value) : value,
         };
         setValues((prev) => ({
             ...prev,
@@ -77,6 +78,11 @@ function CampaignForm() {
     };
 
     const addPayoutRow = () => {
+        if (values.payouts.length >= MAX_PAYOUTS) {
+            showToast('You can only add up to 3 payout entries.', 'error');
+            return;
+        }
+
         setValues((prev) => ({
             ...prev,
             payouts: [...prev.payouts, { country: 'Estonia', payout_value: 0 }],
@@ -108,7 +114,7 @@ function CampaignForm() {
                 payouts: values.payouts,
             };
 
-            const response = await api.post('/campaigns', payload);
+            await api.post('/campaigns', payload);
 
             showToast('Campaign created successfully!', 'success');
 
@@ -203,6 +209,7 @@ function CampaignForm() {
                     error={!!errors.title}
                     helperText={errors.title}
                 />
+
                 <TextField
                     label="Landing Page URL"
                     name="landing_page_url"
@@ -261,7 +268,12 @@ function CampaignForm() {
                     </Typography>
                 )}
 
-                <Button variant="outlined" onClick={addPayoutRow}>
+                <Button
+                    variant="outlined"
+                    onClick={addPayoutRow}
+                    disabled={values.payouts.length >= MAX_PAYOUTS}
+
+                >
                     Add Another Country Payout
                 </Button>
 

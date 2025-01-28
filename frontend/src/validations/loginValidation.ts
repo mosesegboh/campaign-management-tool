@@ -1,5 +1,3 @@
-import validate from 'validate.js';
-
 export const loginConstraints = {
     email: {
         presence: { allowEmpty: false, message: "^Email is required" },

@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Box } from '@mui/material';
 import { AuthProvider } from './contexts/AuthContext';

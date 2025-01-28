@@ -141,8 +141,11 @@ Run backend tests:
 
 ## Notes for Evaluator
 
-1. ERD Diagram is in the project root.
-2. Ensure the `APP_KEY` in the backend `.env` file is consistent across environments.
+1. The typescript front end is inside the root frontend directory.
+2. I placed a sql database dump in the root directory just in case you do not want to migrate.
+3. you can run the app either with Docker or manually as highlighted above.
+3. ERD Diagram is in the project root.
+4. Ensure the `APP_KEY` in the backend `.env` file is consistent across environments.
 3. If using Docker, make sure ports 3000, 9000, and 3306 are free.
 
 For questions or issues, reach out to mosesegboh@yahoo.com. Happy Reviewing!

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import api from '../services/api';
 import {
     Box,
@@ -16,8 +16,11 @@ import {
     Snackbar,
     SelectChangeEvent,
     Paper,
+    Pagination,
+    Stack,
+    CircularProgress,
 } from '@mui/material';
-import { Campaign } from '../types/types.ts';
+import { Campaign, PaginatedResponse } from '../types/types.ts';
 
 function CampaignList() {
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -26,26 +29,40 @@ function CampaignList() {
     const [snackbarMessage, setSnackbarMessage] = useState<string>('');
     const [showSnackbar, setShowSnackbar] = useState<boolean>(false);
 
+    const [page, setPage] = useState<number>(1);
+    const [perPage, setPerPage] = useState<number>(10);
+    const [totalPages, setTotalPages] = useState<number>(1);
+    const [loading, setLoading] = useState<boolean>(false);
+
     const fetchCampaigns = async () => {
+        setLoading(true);
         try {
-            const response = await api.get<Campaign[]>('/campaigns', {
+            const response = await api.get<PaginatedResponse<Campaign>>('/campaigns', {
                 params: {
                     title: searchTitle,
                     activity_status: searchStatus,
+                    page: page,
+                    per_page: perPage,
                 },
             });
-            setCampaigns(response.data);
+
+            setCampaigns(response.data.data);
+            setPage(response.data.current_page);
+            setTotalPages(response.data.last_page);
         } catch (error) {
             console.error(error);
             showToast('Error fetching campaigns');
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchCampaigns();
-    }, []);
+    }, [page, perPage]);
 
     const handleSearch = () => {
+        setPage(1);
         fetchCampaigns();
     };
 
@@ -76,6 +93,19 @@ function CampaignList() {
 
     const handleStatusSelectChange = (e: SelectChangeEvent) => {
         setSearchStatus(e.target.value);
+    };
+
+    const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+    };
+
+    const handlePerPageChange = (e: ChangeEvent<HTMLInputElement>) => {
+         const value = parseInt(e.target.value, 10)
+        if (!isNaN(value)) {
+            setPerPage(value);
+            setPage(1);
+        }
+
     };
 
     return (
@@ -116,6 +146,15 @@ function CampaignList() {
                 <Button variant="contained" onClick={handleSearch}>
                     Search
                 </Button>
+                {/* Per Page Selector */}
+                <TextField
+                    label="Items per page"
+                    type="number"
+                    value={perPage}
+                    onChange={handlePerPageChange}
+                    inputProps={{ min: 1, max: 100 }}
+                    sx={{ width: 150 }}
+                />
             </Box>
 
             {/* Responsive table container */}
@@ -131,7 +170,13 @@ function CampaignList() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {campaigns.length > 0 ? (
+                        {loading ? (
+                            <TableRow>
+                                <TableCell colSpan={5} align="center">
+                                    <CircularProgress />
+                                </TableCell>
+                            </TableRow>
+                        ) : campaigns.length > 0 ? (
                             campaigns.map((c) => (
                                 <TableRow key={c.id}>
                                     <TableCell>{c.title}</TableCell>
@@ -174,16 +219,25 @@ function CampaignList() {
                                 </TableRow>
                             ))
                         ) : (
-
                             <TableRow>
                                 <TableCell colSpan={5} align="center">
-                                    There is currently no campaigns for you.
+                                    There are currently no campaigns for you.
                                 </TableCell>
                             </TableRow>
                         )}
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            {/* Pagination Controls */}
+            <Stack spacing={2} direction="row" justifyContent="center" alignItems="center" mt={2}>
+                <Pagination
+                    count={totalPages}
+                    page={page}
+                    onChange={handlePageChange}
+                    color="primary"
+                />
+            </Stack>
 
             <Snackbar
                 open={showSnackbar}

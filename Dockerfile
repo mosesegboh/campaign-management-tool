@@ -1,5 +1,3 @@
-# backend/Dockerfile
-
 # Use the official PHP image with PHP 8.1 and FPM
 FROM php:8.1-fpm
 

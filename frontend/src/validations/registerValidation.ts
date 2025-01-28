@@ -1,5 +1,3 @@
-import validate from 'validate.js';
-
 export const registerConstraints = {
     name: {
         presence: { allowEmpty: false, message: "^Name is required" },

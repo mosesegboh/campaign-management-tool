@@ -28,6 +28,9 @@ export interface User {
     id: number;
     name: string;
     email: string;
+    advertiser: {
+        id: number;
+    };
 }
 
 export interface Advertiser {

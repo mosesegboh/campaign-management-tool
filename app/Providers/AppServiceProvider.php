@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-//use Illuminate\Support\ServiceProvider;
 use App\Models\Campaign;
 use App\Policies\CampaignPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;

@@ -4,18 +4,18 @@ import { Box, Typography, Link } from '@mui/material';
 const Footer: React.FC = () => {
     return (
         <Box
-            sx={{ position: 'fixed', bottom: 0, width: 1.0 }}
             component="footer"
             sx={{
+                bottom: 0,
+                width: '100%',
                 py: 3,
-                px: 2,
-                mt: 50,
-                mb: -100,
+                px: 3,
                 textAlign: 'center',
+                mt: 20
             }}
         >
             <Typography variant="body1">
-                © {new Date().getFullYear()} Adcash Test
+                © {new Date().getFullYear()} Ad cash Test
             </Typography>
             <Typography variant="body2" color="text.secondary">
                 <Link href="#" color="inherit" underline="hover">

@@ -1,5 +1,3 @@
-import validate from 'validate.js';
-
 export const campaignConstraints = {
     advertiser_id: {
         presence: { allowEmpty: false, message: "^Advertiser ID is required" },

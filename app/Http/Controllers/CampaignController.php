@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\Rules\UniquePayoutCountries;
 
 class CampaignController extends Controller
 {
@@ -36,7 +37,11 @@ class CampaignController extends Controller
             $query->where('activity_status', $request->activity_status);
         }
 
-        return response()->json($query->get());
+        $perPage = $request->get('per_page', 10);
+
+        $campaigns = $query->paginate($perPage);
+
+        return response()->json($campaigns);
     }
 
     /**
@@ -58,7 +63,7 @@ class CampaignController extends Controller
             'advertiser_id'        => 'required|exists:advertisers,id',
             'title'                => 'required|string|max:255',
             'landing_page_url'     => 'required|url',
-            'payouts'              => 'required|array|min:1',
+            'payouts'              => ['sometimes', 'array', 'min:1', new UniquePayoutCountries],
             'payouts.*.country'    => 'required|in:Estonia,Spain,Bulgaria',
             'payouts.*.payout_value' => 'required|numeric|min:0',
         ]);
@@ -71,7 +76,7 @@ class CampaignController extends Controller
             'advertiser_id'     => $request->advertiser_id,
             'title'             => $request->title,
             'landing_page_url'  => $request->landing_page_url,
-            'activity_status'   => 'paused', // default
+            'activity_status'   => 'paused',
         ]);
 
         foreach ($request->payouts as $payout) {
