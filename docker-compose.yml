@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-    # Laravel App
+    # Laravel Backend
     app:
         build:
             context: .
@@ -24,7 +24,7 @@ services:
             - ./storage:/var/www/storage
             - ./bootstrap/cache:/var/www/bootstrap/cache
         ports:
-            - "9000:9000"
+            - "9000:80"  # Host's 9000 -> Container's 80 (nginx)
         depends_on:
             - db
 
@@ -52,13 +52,11 @@ services:
         container_name: campaign-management-frontend
         restart: unless-stopped
         environment:
-            - CHOKIDAR_USEPOLLING=true
             - REACT_APP_API_URL=http://localhost:9000/api
         volumes:
             - ./frontend:/app
-            - /app/node_modules
         ports:
-            - "3000:3000"
+            - "3000:80"  # Host's 3000 -> Container's 80 (nginx)
         depends_on:
             - app
 
