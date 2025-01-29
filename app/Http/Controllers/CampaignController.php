@@ -60,7 +60,6 @@ class CampaignController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'advertiser_id'        => 'required|exists:advertisers,id',
             'title'                => 'required|string|max:255',
             'landing_page_url'     => 'required|url',
             'payouts'              => ['sometimes', 'array', 'min:1', new UniquePayoutCountries],
@@ -73,7 +72,7 @@ class CampaignController extends Controller
         }
 
         $campaign = Campaign::create([
-            'advertiser_id'     => $request->advertiser_id,
+            'advertiser_id'     => $advertiser->id,
             'title'             => $request->title,
             'landing_page_url'  => $request->landing_page_url,
             'activity_status'   => 'paused',

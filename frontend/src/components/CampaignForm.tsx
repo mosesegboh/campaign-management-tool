@@ -192,16 +192,6 @@ function CampaignForm() {
                 }}
             >
                 <TextField
-                    label="Advertiser ID"
-                    name="advertiser_id"
-                    value={values.advertiser_id}
-                    disabled
-                    error={!!errors.advertiser_id}
-                    helperText={errors.advertiser_id}
-                    type="number"
-                    InputProps={{ inputProps: { min: 1 } }}
-                />
-                <TextField
                     label="Campaign Title"
                     name="title"
                     value={values.title}
