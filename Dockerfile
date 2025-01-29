@@ -1,10 +1,10 @@
-# Use the official PHP image with PHP 8.1 and FPM
-FROM php:8.1-fpm
+# stage 1: Build the Laravel application
+FROM php:8.2-fpm AS build
 
-# Set working directory
+# set the working directory
 WORKDIR /var/www
 
-# Install system dependencies
+# install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
@@ -15,23 +15,38 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
-    curl
+    curl \
+    nginx
 
-# Install PHP extensions
+# install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Install Composer
+# install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy existing application directory contents
+# copy existing application directory contents
 COPY . /var/www
 
-# Install Laravel dependencies
+# install Laravel dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Copy existing application permissions
+# copy existing application permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
+# stage 2: serve the Laravel application using nginx
+FROM nginx:stable-alpine
+
+# remove the default nginx configuration
+RUN rm /etc/nginx/conf.d/default.conf
+
+# copy custom nginx configuration
+COPY nginx.conf /etc/nginx/conf.d
+
+# copy the built Laravel application from Stage 1
+COPY --from=build /var/www /var/www
+
+# expose port 80
+EXPOSE 80
+
+# start nginx and PHP-FPM
+CMD ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]

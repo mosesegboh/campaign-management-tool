@@ -5,7 +5,7 @@ A web application for managing marketing campaigns. It allows advertisers to cre
 ## Tech Stack
 
 - Backend: Laravel 11 (PHP 8.1)
-- Frontend: React (with Material UI)
+- Frontend: React Typescript (with Material UI)
 - Database: MySQL 8.0
 - Authentication: Laravel Sanctum
 - Containerization: Docker with Docker Compose (optional)
@@ -13,10 +13,12 @@ A web application for managing marketing campaigns. It allows advertisers to cre
 ## Tech Stack Needed to Run
 
 - PHP 8.1 or higher
-- Composer 2.x
-- Node.js 18.x and npm 8.x
 - MySQL 8.0 or higher
-- Docker and Docker Compose (optional, for Dockerized setup)
+- Docker (optional, for Dockerized setup) : [Install Docker](https://docs.docker.com/get-docker/)
+- Docker Compose (optional, for Dockerized setup) :** [Install Docker Compose](https://docs.docker.com/compose/install/)
+- Git: [Install Git](https://git-scm.com/downloads)
+- Node.js 18.x and npm 8.x: [Install Node.js](https://nodejs.org/en/download/)
+- Composer 2.x: [Install Composer](https://getcomposer.org/download/)
 
 ## What the App Does
 
@@ -28,6 +30,33 @@ A web application for managing marketing campaigns. It allows advertisers to cre
     - Update and pause/activate campaigns.
 
 Only campaigns belonging to the logged-in advertiser are accessible to them.
+
+## Project Structure
+
+campaign-management-tool/
+├── frontend/                # React Typescript project
+│   ├── public/
+│   ├── src/
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── Dockerfile
+│   └── ...other React files
+├── storage/                 # Laravel storage
+├── bootstrap/cache/         # Laravel cache
+├── vendor/                  # Composer dependencies
+├── .env.example             # Environment variables for backend
+├── Dockerfile               # Dockerfile for backend
+├── docker-compose.yml       # Docker Compose configuration
+├── README.md
+├── ERD Diagram.png          # Entity-Relationship Diagram
+└── database_dump.sql        # SQL database dump
+
+Notes:
+
+- Backend Files: Located in the project root.
+- Frontend Files: Located in the `frontend/` directory.
+- Database Dump: Available as `campaign_management.sql` for quick setup.
+
 
 ## How to Run the App
 
@@ -109,10 +138,11 @@ Step 3: Set up the frontend.
 cd ../frontend
 cp .env.example .env
 npm install
-npm start
+npm run build or npm run dev
 ```
 
-React will start the development server at http://localhost:3000. Ensure the `REACT_APP_API_URL` in `.env` points to the backend:
+React will start the development server at http://localhost:3000 (start) or http://localhost:5173 (dev). 
+Ensure the `REACT_APP_API_URL` in `.env` points to the backend:
 
 ```env
 REACT_APP_API_URL=http://127.0.0.1:8000/api
