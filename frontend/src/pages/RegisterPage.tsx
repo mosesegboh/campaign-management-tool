@@ -65,25 +65,16 @@ const RegisterPage: React.FC = () => {
                 const formattedErrors: { [key: string]: string } = {};
 
                 if (backendErrors.errors) {
-                    if (backendErrors.errors.name) {
-                        formattedErrors.name = Array.isArray(backendErrors.errors.name)
-                            ? backendErrors.errors.name[0]
-                            : backendErrors.errors.name;
+                    for (const key in backendErrors.errors) {
+                        formattedErrors[key] = Array.isArray(backendErrors.errors[key])
+                            ? backendErrors.errors[key][0]
+                            : backendErrors.errors[key];
                     }
-                    if (backendErrors.errors.email) {
-                        formattedErrors.email = Array.isArray(backendErrors.errors.email)
-                            ? backendErrors.errors.email[0]
-                            : backendErrors.errors.email;
-                    }
-                    if (backendErrors.errors.password) {
-                        formattedErrors.password = Array.isArray(backendErrors.errors.password)
-                            ? backendErrors.errors.password[0]
-                            : backendErrors.errors.password;
-                    }
-                    if (backendErrors.errors.password_confirmation) {
-                        formattedErrors.password_confirmation = Array.isArray(backendErrors.errors.password_confirmation)
-                            ? backendErrors.errors.password_confirmation[0]
-                            : backendErrors.errors.password_confirmation;
+                } else {
+                    for (const key in backendErrors) {
+                        formattedErrors[key] = Array.isArray(backendErrors[key])
+                            ? backendErrors[key][0]
+                            : backendErrors[key];
                     }
                 }
 
